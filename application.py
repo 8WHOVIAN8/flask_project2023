@@ -53,6 +53,10 @@ def reg_item_submit():
 def login():
     return render_template("login.html")
 
+@application.route("/login_confirm")
+def login_confirm():
+    return render_template("index.html")
+
 @application.route("/signup")
 def signup():
     return render_template("signup.html")
