@@ -10,11 +10,6 @@
 <body>
     <nav class="navbar">
         <ul class="navbar__menu">
-			{% if session['id'] %}
-			<li><a href="/logout"><b>{{session['id']님 반갑습니다!</b> logout</a></li>
-            {% else %}
-			<li><a href="/login">login</a></li>
-			{% endif %}
 			<li><a href="/">Ewha Market</a></li>
 			<li><a href="/login">login</a></li>
             <li><a href="/list">List</a></li>
