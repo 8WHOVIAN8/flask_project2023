@@ -71,10 +71,12 @@ def register_user():
     else:
         flash("user id already exist!")
         return render_template("signup.html")
-
+    
     print(name,addr,phone,category,status)
     #return render_template("reg_item.html")
 
-
 if __name__ == "__main__":
     application.run(host='0.0.0.0', debug=True)
+
+   
+
