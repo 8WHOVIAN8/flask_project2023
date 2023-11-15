@@ -10,8 +10,8 @@ DB = DBhandler()
 
 @application.route("/")
 def hello():
-    #return render_template("index.html")
-    return redirect(url_for('view_list'))
+    return render_template("index.html")
+    #return redirect(url_for('view_list'))
 
 @application.route("/list")
 def view_list():
@@ -89,7 +89,7 @@ def login_user():
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
     if DB.find_user(id_, pw_hash):
         session['id']=id_
-        return redirect(url_for('view_list'))
+        return redirect(url_for('hello'))
     else:
         flash("Wrong ID or PW!")
         return render_template("login.html")
@@ -111,10 +111,19 @@ def register_user():
 
     #print(name,addr,phone,category,status)
     #return render_template("reg_item.html")
+    
 @application.route("/logout")
 def logout_user():
     session.clear()
-    return redirect(url_for('list_restaurants'))
+    return redirect(url_for('hello'))
+
+
+@application.route("/view_detail/<name>/")
+def view_item_detail(name):
+    print("###name:",name)
+    data = DB.get_item_byname(str(name))
+    print("####data:",data)
+    return render_template("detail.html", name=name, data=data)
 
 if __name__ == "__main__":
     application.run(host='0.0.0.0', debug=True)
