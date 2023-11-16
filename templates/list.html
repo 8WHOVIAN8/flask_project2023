@@ -1,4 +1,73 @@
 {% extends "index.html" %}
+
 {% block section %}
-등록된 상품 리스트 조회 화면입니다.
+{% if total > 0 %}
+<p>
+    상품 리스트 -- 현재까지 {{total}}개 등록됨
+</p>
+
+<table>
+    <tr>
+        {% for key, value in datas %}
+        <td>
+            <p>상품이름: {{ key }}</p>
+            <img src="static/images/{{ value.img_path }}" width="140" height="200" onclick="location.href='/view_detail/{{ key }}/';" style="cursor:pointer;">
+        </td>
+        {% if loop.index % 3 == 0 %}
+    </tr>
+    <tr>
+        {% endif %}
+        {% endfor %}
+    </tr>
+</table>
+
+<!-- 페이지네이션을 위한 코드 시작 -->
+<div class="page-wrap">
+    <div class="page-nation">
+        <ul>
+            <li>
+                {% for i in range(page_count)%}
+                <a href="{{url_for('view_list', page=i)}}" color="black">{{i}}</a>
+                {% endfor %}
+            </li>
+        </ul>
+    </div>
+</div>
+{% else %}
+<p>
+등록된 상품이 없습니다.
+</p>
+{% endif %}
+
+<style>
+    .page-nation li{
+        list-style: none;
+    }
+    .page-wrap{
+        text-align: center;
+        font-size: 0;
+    }
+    .page-nation{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
+    .page-nation a{
+        display: block;
+        margin: 0 3px;
+        float: left;
+        border: 1px solid #e6e6e6;
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+        background-color: #fff;
+        font-size: 13px;
+        color: black;
+        text-decoration: none;
+        font-weight:bold;
+}
+
+</style>
 {% endblock section %}
