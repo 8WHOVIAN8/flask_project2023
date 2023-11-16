@@ -117,7 +117,6 @@ def logout_user():
     session.clear()
     return redirect(url_for('hello'))
 
-
 @application.route("/view_detail/<name>/")
 def view_item_detail(name):
     print("###name:",name)
