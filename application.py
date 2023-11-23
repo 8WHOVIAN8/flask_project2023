@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for, ses
 from database import DBhandler
 import hashlib
 import sys
+from flask import jsonify
 
 application = Flask(__name__)
 application.config["SECRET_KEY"] = "helloosp"
@@ -46,37 +47,6 @@ def view_list():
         total=item_counts
     )
 
-@application.route("/review")
-def view_review():
-    page = request.args.get("page", 0, type = int)
-    per_page = 6
-    per_row = 3
-    row_count = int(per_page/per_row)
-    start_idx = per_page*per_page
-    end_idx = per_page*(page+1)
-    data = DB.get_reviews()
-    item_counts = len(data)
-    data = dict(list(data.items())[start_idx:end_idx])
-    tot_count = len(data)
-    for i in range(row_count):
-        if(i == row_cont-1) and (tot_count%per_row != 0):
-            locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:])
-        else:
-            locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:(i+1)*per_row])
-    return render_template(
-        "review.html",
-        data = data.items(),
-        row1 = locals()['data_0'].items(),
-        row2 = locals()['data_1'].items(),
-        limit = per_page,
-        page = page,
-        page_count = int(item_counts/per_page+1),
-        total = item_counts)
-
-@application.route("/reg_items")
-def reg_item():
-    return render_template("reg_items.html")
-
 @application.route("/reg_review_init/<name>/")
 def reg_review_init(name):
     return render_template("reg_reviews.html", name=name)
@@ -84,8 +54,55 @@ def reg_review_init(name):
 @application.route("/reg_review", methods=['POST'])
 def reg_review():
     data = request.form
-    DB.reg_review(data)
+    image_file = request.files["file"]
+    img_path = "static/images/{}".format(image_file.filename)
+    image_file.save(img_path)
+    DB.reg_review(data,img_path)
     return redirect(url_for('view_review'))
+
+@application.route("/review")
+def view_review():
+    page = request.args.get("page", 0, type = int)
+    per_page = 6
+    per_row = 3
+    row_count = int(per_page/per_row)
+    start_idx = per_page*page
+    end_idx = per_page*(page+1)
+    
+    data = DB.get_reviews()
+    item_counts = len(data)
+    data = dict(list(data.items())[start_idx:end_idx])
+    tot_count = len(data)
+    
+    for i in range(row_count):
+        if(i==row_count-1) and (tot_count%per_row!=0):
+            locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:])
+        else: 
+            locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:(i+1)*per_row])
+    return render_template(
+        "review.html",
+        datas = data.items(),
+        row1 = locals()['data_0'].items(),
+        row2 = locals()['data_1'].items(),
+        limit = per_page,
+        page = page,
+        page_count = int(item_counts/per_page+1),
+        total = item_counts
+    )
+
+@application.route("/view_review_detail/<name>/")
+def view_review_detail(name):
+    review_data = DB.get_review_byname(name)
+    print(review_data)
+    if review_data:
+        return render_template("review_detail.html", data=review_data)
+    else:
+        flash("Review not found!")
+        return redirect(url_for('view_review'))
+
+@application.route("/reg_items")
+def reg_item():
+    return render_template("reg_items.html")
 
 @application.route("/submit_item_post", methods=['POST'])
 def reg_item_submit_post():
@@ -154,6 +171,20 @@ def view_item_detail(name):
     print("####data:",data)
     return render_template("detail.html", name=name, data=data)
 
+@application.route('/show_heart/<name>/', methods=['GET'])
+def show_heart(name):
+    my_heart = DB.get_heart_byname(session['id'],name)
+    return jsonify({'my_heart': my_heart})
+
+@application.route('/like/<name>/', methods=['POST'])
+def like(name):
+    my_heart = DB.update_heart(session['id'],'Y',name)
+    return jsonify({'msg': '좋아요 완료!'})
+
+@application.route('/unlike/<name>/', methods=['POST'])
+def unlike(name):
+    my_heart = DB.update_heart(session['id'],'N',name)
+    return jsonify({'msg': '안좋아요 완료!'})
 
 if __name__ == "__main__":
     application.run(host='0.0.0.0', debug=True)
