@@ -11,7 +11,13 @@
         {% for key, value in row1 %}
         <td>제목: {{value.title}}<br>
             <img src="{{ value.img_path }}" width="240" height="200" onclick="location.href='/view_review_detail/{{ key }}/';" style="cursor:pointer;">
-
+        </td>
+    {% endfor %}
+    </tr>
+    <tr>
+        {% for key, value in row2 %}
+        <td>제목: {{value.title}}<br>
+            <img src="{{ value.img_path }}" width="240" height="200" onclick="location.href='/view_review_detail/{{ key }}/';" style="cursor:pointer;">
         </td>
     {% endfor %}
     </tr>
