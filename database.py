@@ -41,7 +41,7 @@ class DBhandler:
         users = self.db.child("user").get()
 
         print("users###", users.val())
-        if str(users.val()) == "None": # first registration
+        if str(users.val()) == "None": 
             return True
         else:
             for res in users.each():

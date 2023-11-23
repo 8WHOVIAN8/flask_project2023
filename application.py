@@ -57,7 +57,7 @@ def reg_review():
     image_file = request.files["file"]
     img_path = "static/images/{}".format(image_file.filename)
     image_file.save(img_path)
-    DB.reg_review(data,img_path)
+    DB.reg_review(data, image_file.filename)
     return redirect(url_for('view_review'))
 
 @application.route("/review")
@@ -93,11 +93,9 @@ def view_review():
 @application.route("/view_review_detail/<name>/")
 def view_review_detail(name):
     review_data = DB.get_review_byname(name)
-    print(review_data)
     if review_data:
         return render_template("review_detail.html", data=review_data)
     else:
-        flash("Review not found!")
         return redirect(url_for('view_review'))
 
 @application.route("/reg_items")
