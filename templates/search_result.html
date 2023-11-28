@@ -1,0 +1,32 @@
+{% extends "index.html" %}
+
+{% block section %}
+{% if items %}
+    <p>
+        검색 결과 -- {{ items|length }}개의 상품이 검색되었습니다.
+    </p>
+
+    <table>
+        <tr>
+            {% for key, value in items.items() %}
+            <td>
+                <p>상품이름: {{ key }}</p>
+                <p>판매자: {{ value.seller }}</p> <!-- Display the seller's ID -->
+                <img src="static/images/{{ value.img_path }}" width="140" height="200" onclick="location.href='/view_detail/{{ key }}/';" style="cursor:pointer;">
+            </td>
+            {% if loop.index % 3 == 0 %}
+        </tr>
+        <tr>
+            {% endif %}
+            {% endfor %}
+        </tr>
+    </table>
+
+    <!-- 페이지네이션 코드 (필요한 경우) -->
+
+{% else %}
+    <p>
+        검색된 상품이 없습니다.
+    </p>
+{% endif %}
+{% endblock section %}

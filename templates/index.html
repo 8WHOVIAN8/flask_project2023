@@ -6,6 +6,7 @@
     <title>Home</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='main.js') }}" defer></script>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -27,7 +28,10 @@
     </nav>
     <section>
         {% block section %}
-
+        <form action="/search" method="get">
+            <input type="text" name="query" placeholder="상품명, 판매자 아이디 검색">
+            <button type="submit">Search</button>
+        </form>
         {% endblock section %}
     </section>
 </body>

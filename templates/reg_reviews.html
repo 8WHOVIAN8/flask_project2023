@@ -1,18 +1,54 @@
-<form class="mb-3" name="myform" id="myform" method="post" action="/reg_review" enctype="multipart/form-data">
-    상품:<input type="text" name="name" id="name" value="{{name}}"><br><br>
-    제목:<input type="text" name="title" id="title" value=""><br><br>
-         <fieldset>
-             <span class="text-bold">별점을 선택해주세요</span>
-             <input type="radio" name="reviewStar" value="5" id="rate1"><label for="rate1">★</label>
-             <input type="radio" name="reviewStar" value="4" id="rate2"><label for="rate2">★</label>
-             <input type="radio" name="reviewStar" value="3" id="rate3"><label for="rate3">★</label>
-             <input type="radio" name="reviewStar" value="2" id="rate4"><label for="rate4">★</label>
-             <input type="radio" name="reviewStar" value="1" id="rate5"><label for="rate5">★</label>
-    </fieldset>
-    <div>
-        <textarea class="col-auto form-control" type="text" name="reviewContents" placeholder="리뷰를 남겨주세요 감사합니다!"></textarea>
-    </div>
-    Review Image Upload:
-    <input type="file" name="file"><br><br>
-    <input type="submit" value="Submit!">
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .star {
+            color: gray; /* 초기 별점 색상을 회색으로 설정 */
+            cursor: pointer;
+        }
+        .star.filled {
+            color: gold; /* 선택된 별점 색상을 금색으로 설정 */
+        }
+    </style>
+</head>
+<body>
+    <form class="mb-3" name="myform" id="myform" method="post" action="/reg_review" enctype="multipart/form-data">
+        상품:<input type="text" name="name" id="name" value="{{name}}"><br><br>
+        제목:<input type="text" name="title" id="title" value=""><br><br>
+        <fieldset>
+            <span class="text-bold">별점을 선택해주세요</span>
+            <div class="stars" data-current-rating="0">
+                <span class="star" onclick="setRating(this)" data-value="1">&#9733;</span>
+                <span class="star" onclick="setRating(this)" data-value="2">&#9733;</span>
+                <span class="star" onclick="setRating(this)" data-value="3">&#9733;</span>
+                <span class="star" onclick="setRating(this)" data-value="4">&#9733;</span>
+                <span class="star" onclick="setRating(this)" data-value="5">&#9733;</span>
+            </div>
+        </fieldset>
+        <input type="hidden" name="reviewStar" id="reviewStar">
+        <div>
+            <textarea class="col-auto form-control" type="text" name="reviewContents" placeholder="리뷰를 남겨주세요 감사합니다!"></textarea>
+        </div>
+        Review Image Upload:
+        <input type="file" name="file"><br><br>
+        <input type="submit" value="Submit!">
+    </form>
+
+    <script>
+        function setRating(star) {
+            var ratingValue = parseInt(star.dataset.value, 10);
+            var stars = document.querySelectorAll('.star');
+
+            stars.forEach(function(s, index) {
+                if (index < ratingValue) {
+                    s.classList.add('filled');
+                } else {
+                    s.classList.remove('filled');
+                }
+            });
+
+            document.getElementById('reviewStar').value = ratingValue;
+        }
+    </script>
+</body>
+</html>
