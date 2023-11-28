@@ -1,26 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
+{% extends "index.html" %}
+
+{% block section %}
 <body>
-    <nav class="navbar">
-        <ul class="navbar__menu">
-            <li><a href="/">Ewha Market</a></li>
-            <li><a href="/list">List</a></li>
-            <li><a href="/review">Review</a></li>
-            <li><a href="/reg_items">Register Items</a></li>
-            <li><a href="/reg_reviews">Register Reviews</a></li>
-        </ul>
-        <a href="#" class="navbar__toggleBtn">
-            <i class="fas fa-bars"></i>
-        </a>
-    </nav>
     <section>
-        {% block section %}
         <form action="/submit_item_post" method="post" enctype="multipart/form-data">
             <div>
                 <label for="name">Item name: </label>
@@ -68,7 +50,6 @@
                 <input type="file" name="file" /><br><br>
             </div>
         </form>
-        {% endblock section %}
     </section>
 </body>
-</html>
+{% endblock section %}
