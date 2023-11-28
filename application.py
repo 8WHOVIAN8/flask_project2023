@@ -24,6 +24,7 @@ def view_list():
     row_count=int(per_page/per_row)
     start_idx=per_page*page
     end_idx=per_page*(page+1)
+    
     if category == "all":
         data = DB.get_items()
     else:
@@ -35,7 +36,7 @@ def view_list():
     else:
         data = dict(list(data.items())[start_idx:end_idx])
     tot_count = len(data)
-    
+
     for i in range(row_count):
         if (i == row_count-1) and (tot_count%per_row != 0):
             locals()['data_{}'.format(i)] = dict(list(data.items())[i*per_row:])
@@ -55,10 +56,14 @@ def view_list():
 
 @application.route("/reg_review_init/<name>/")
 def reg_review_init(name):
+    if 'id' not in session:
+        return redirect(url_for('login'))
     return render_template("reg_reviews.html", name=name)
 
 @application.route("/reg_review", methods=['POST'])
 def reg_review():
+    if 'id' not in session:
+        return redirect(url_for('login'))
     data = request.form
     image_file = request.files["file"]
     img_path = "static/images/{}".format(image_file.filename)
@@ -68,6 +73,9 @@ def reg_review():
 
 @application.route("/review")
 def view_review():
+    if 'id' not in session:
+        return redirect(url_for('login'))
+    
     page = request.args.get("page", 0, type = int)
     per_page = 6
     per_row = 3
@@ -98,6 +106,9 @@ def view_review():
 
 @application.route("/view_review_detail/<name>/")
 def view_review_detail(name):
+    if 'id' not in session:
+        return redirect(url_for('login'))
+    
     review_data = DB.get_review_byname(name)
     if review_data:
         return render_template("review_detail.html", data=review_data)
@@ -106,10 +117,16 @@ def view_review_detail(name):
 
 @application.route("/reg_items")
 def reg_item():
+    if 'id' not in session:
+        return redirect(url_for('login'))
+    
     return render_template("reg_items.html")
 
 @application.route("/submit_item_post", methods=['POST'])
 def reg_item_submit_post():
+    if 'id' not in session:
+        return redirect(url_for('login'))
+    
     image_file = request.files["file"]
     image_file.save("static/images/{}".format(image_file.filename))
     data = request.form
@@ -120,6 +137,9 @@ def reg_item_submit_post():
 
 @application.route("/submit_item")
 def reg_item_submit():
+    if 'id' not in session:
+        return redirect(url_for('login'))
+    
     name = request.args.get("name")
     seller = request.args.get("seller")
     addr = request.args.get("addr")
@@ -135,11 +155,12 @@ def login():
 
 @application.route("/login_confirm", methods=['POST'])
 def login_user():
-    id_=request.form['id']
-    pw=request.form['pw']
+    id_ = request.form['id']
+    pw = request.form['pw']
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    
     if DB.find_user(id_, pw_hash):
-        session['id']=id_
+        session['id'] = id_
         return redirect(url_for('hello'))
     else:
         flash("Wrong ID or PW!")
@@ -152,16 +173,19 @@ def signup():
 @application.route("/signup_post", methods=['POST'])
 def register_user():
     data = request.form
-    pw = request.form['pw']
+    pw = data['pw']
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+
     if DB.insert_user(data, pw_hash):
         return render_template("login.html")
     else:
-        flash("user id already exist!")
+        flash("User ID already exist")
         return render_template("signup.html")
+      
 
     #print(name,addr,phone,category,status)
     #return render_template("reg_item.html")
+    
     
 @application.route("/logout")
 def logout_user():
