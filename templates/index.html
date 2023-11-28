@@ -28,7 +28,10 @@
     </nav>
     <section>
         {% block section %}
-
+        <form action="/search" method="get">
+            <input type="text" name="query" placeholder="상품명 검색">
+            <button type="submit">Search</button>
+        </form>
         {% endblock section %}
     </section>
 </body>
