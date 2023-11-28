@@ -184,5 +184,13 @@ def unlike(name):
     my_heart = DB.update_heart(session['id'],'N',name)
     return jsonify({'msg': '안좋아요 완료!'})
 
+@application.route("/search")
+def search():
+    query = request.args.get("query")
+    all_items = DB.get_items()
+    filtered_items = {name: details for name, details in all_items.items() if query.lower() in name.lower()}
+    return render_template("search_result.html", items=filtered_items)
+
+
 if __name__ == "__main__":
     application.run(host='0.0.0.0', debug=True)
