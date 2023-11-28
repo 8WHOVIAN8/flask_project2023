@@ -1,6 +1,24 @@
 {% extends "index.html" %}
 
 {% block section %}
+<script>
+    $(document).ready(function() {
+        //alert("{{category}}");
+        $('#category option:contains("{{category}}")').prop("selected", true);
+    });
+</script>
+
+<div>
+    <select id="category" name="category" onchange="location=this.value">
+        <option value="{{url_for('view_list', page=i, category='all')}}">All</option>
+        <option value="{{url_for('view_list', page=i, category='Clothes')}}">Clothes</option>
+        <option value="{{url_for('view_list', page=i, category='Beauty')}}">Beauty</option>
+        <option value="{{url_for('view_list', page=i, category='Books')}}">Books</option>
+        <option value="{{url_for('view_list', page=i, category='Furniture')}}">Furniture</option>
+        <option value="{{url_for('view_list', page=i, category='Electronics')}}">Electronics</option>
+        <option value="{{url_for('view_list', page=i, category='ETC')}}">ETC</option>
+    </select>
+</div>
 {% if total > 0 %}
 <p>
     상품 리스트 -- 현재까지 {{total}}개 등록됨
